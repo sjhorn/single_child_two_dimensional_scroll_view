@@ -1,7 +1,7 @@
 name: single_child_two_dimensional_scroll_view
 description: "A box in which a single widget can be scrolled in two dimensions"
 version: 0.0.1
-homepage:
+homepage: https://github.com/sjhorn/single_child_two_dimensional_scroll_view/tree/main
 
 environment:
   sdk: '>=3.2.6 <4.0.0'
