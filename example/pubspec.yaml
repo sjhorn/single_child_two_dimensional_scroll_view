@@ -1,0 +1,22 @@
+name: single_child_two_dimensional_scroll_view_example
+description: "A sample application that uses SingleChildTwoDimentionalScrollView"
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.6 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  single_child_two_dimensional_scroll_view:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true

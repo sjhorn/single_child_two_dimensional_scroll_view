@@ -1,0 +1,19 @@
+name: single_child_two_dimensional_scroll_view
+description: "A box in which a single widget can be scrolled in two dimensions"
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: '>=3.2.6 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
