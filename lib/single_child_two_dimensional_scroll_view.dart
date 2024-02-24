@@ -71,7 +71,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
     super.key,
     this.padding,
     this.reverseVertical = false,
-    this.reverseHoritonal = false,
+    this.reverseHorizontal = false,
     this.primary,
     this.verticalPhysics,
     this.verticalController,
@@ -102,7 +102,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
   /// to left when [reverse] is true.
   ///
   /// Defaults to false.
-  final bool reverseHoritonal;
+  final bool reverseHorizontal;
 
   /// {@macro flutter.widgets.scroll_view.primary}
   final bool? primary;
@@ -184,7 +184,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
         decorationClipBehavior: clipBehavior,
       ),
       horizontalDetails: ScrollableDetails.horizontal(
-        reverse: reverseHoritonal,
+        reverse: reverseHorizontal,
         physics: horizontalPhysics,
         controller: horizontalController,
         decorationClipBehavior: clipBehavior,
@@ -295,38 +295,13 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
 
     child.layout(const BoxConstraints(), parentUsesSize: true);
     final parentChildData = parentDataOf(child);
-    parentChildData.layoutOffset =
-        _paintOffsetForOffset(child, Offset(offsetX, offsetY));
+
+    parentChildData.layoutOffset = Offset(-offsetX, -offsetY);
+
     horizontalOffset.applyContentDimensions(
         0, clampDouble(child.size.width - viewportWidth, 0, double.infinity));
     verticalOffset.applyContentDimensions(
         0, clampDouble(child.size.height - viewportHeight, 0, double.infinity));
-  }
-
-  Offset _paintOffsetForOffset(RenderBox child, Offset offset) {
-    return switch ((horizontalAxisDirection, verticalAxisDirection)) {
-      (AxisDirection.right, AxisDirection.down) =>
-        Offset(-offset.dx, -offset.dy),
-      (AxisDirection.right, AxisDirection.up) =>
-        Offset(-offset.dx, offset.dy - child.size.height + size.height),
-      (AxisDirection.left, AxisDirection.down) =>
-        Offset(offset.dx - child.size.width + size.width, -offset.dy),
-      (AxisDirection.left, AxisDirection.up) => Offset(
-          offset.dx - child.size.width + size.width,
-          offset.dy - child.size.height + size.height),
-      _ => throw (Exception('invalid state for scrollabe')),
-    };
-  }
-
-  void _paintChild(PaintingContext context, Offset offset) {
-    RenderBox? child = firstChild;
-    if (child != null) {
-      final TwoDimensionalViewportParentData childParentData =
-          parentDataOf(child);
-      if (childParentData.isVisible) {
-        context.paintChild(child, offset + childParentData.paintOffset!);
-      }
-    }
   }
 
   final LayerHandle<ClipRectLayer> _clipRectLayer =
@@ -338,7 +313,7 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
     super.dispose();
   }
 
-  bool _shouldClipAtPaintOffset(RenderBox child, Offset offset) {
+  bool _shouldClipAtPaintOffset(Offset offset) {
     assert(firstChild != null);
     switch (clipBehavior) {
       case Clip.none:
@@ -348,8 +323,8 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
       case Clip.antiAliasWithSaveLayer:
         return offset.dx < 0 ||
             offset.dy < 0 ||
-            offset.dx + child.size.width > size.width ||
-            offset.dy + child.size.height > size.height;
+            offset.dx + firstChild!.size.width > size.width ||
+            offset.dy + firstChild!.size.height > size.height;
     }
   }
 
@@ -358,18 +333,92 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
     final child = firstChild;
     if (child == null) return;
     final paintOffset = parentDataOf(child).paintOffset!;
-    if (_shouldClipAtPaintOffset(child, paintOffset)) {
+
+    void paintChild(context, offset) {
+      context.paintChild(child, offset + paintOffset);
+    }
+
+    if (_shouldClipAtPaintOffset(paintOffset)) {
       _clipRectLayer.layer = context.pushClipRect(
         needsCompositing,
         offset,
         Offset.zero & viewportDimension,
-        _paintChild,
+        paintChild,
         clipBehavior: clipBehavior,
         oldLayer: _clipRectLayer.layer,
       );
     } else {
       _clipRectLayer.layer = null;
-      _paintChild(context, offset);
+      paintChild(context, offset);
     }
+  }
+
+  @override
+  void showOnScreen(
+      {RenderObject? descendant,
+      Rect? rect,
+      Duration duration = Duration.zero,
+      Curve curve = Curves.ease}) {
+    RenderTwoDimensionalViewport.showInViewport(
+      descendant: descendant,
+      viewport: this,
+      axisDirection: AxisDirection.right,
+      rect: null,
+      duration: duration,
+      curve: curve,
+    );
+
+    Rect? newRect = RenderTwoDimensionalViewport.showInViewport(
+      descendant: descendant,
+      viewport: this,
+      axisDirection: AxisDirection.down,
+      rect: null,
+      duration: duration,
+      curve: curve,
+    );
+    if (newRect == null && descendant is RenderBox) {
+      double offsetX =
+          getOffsetToReveal(descendant, 0.0, axis: Axis.horizontal).offset;
+      double offsetY =
+          getOffsetToReveal(descendant, 0.0, axis: Axis.vertical).offset;
+      if (offsetX == 0 && offsetY == 0) {
+        newRect = Offset.zero & descendant.size;
+      }
+    }
+
+    super.showOnScreen(
+      rect: newRect,
+      duration: duration,
+      curve: curve,
+    );
+  }
+
+  @override
+  Rect? describeApproximatePaintClip(RenderObject? child) {
+    if (child != null &&
+        child is RenderBox &&
+        _shouldClipAtPaintOffset(parentDataOf(child).paintOffset!)) {
+      return Offset.zero & size;
+    }
+    return null;
+  }
+
+  @override
+  Rect? describeSemanticsClip(RenderObject child) {
+    double maxScrollXExtent = clampDouble(
+        firstChild!.size.width - viewportDimension.width, 0, double.infinity);
+    double maxScrollYExtent = clampDouble(
+        firstChild!.size.height - viewportDimension.height, 0, double.infinity);
+
+    final double remainingOffsetX = maxScrollXExtent - horizontalOffset.pixels;
+    final double remainingOffsetY = maxScrollYExtent - verticalOffset.pixels;
+
+    Rect rect = Rect.fromLTRB(
+      semanticBounds.left - horizontalOffset.pixels,
+      semanticBounds.top - verticalOffset.pixels,
+      semanticBounds.right + remainingOffsetX,
+      semanticBounds.bottom + remainingOffsetY,
+    );
+    return rect;
   }
 }
