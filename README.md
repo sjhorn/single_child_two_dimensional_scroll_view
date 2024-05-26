@@ -1,12 +1,8 @@
 # Single Child Two Dimensional Scroll View
 [![Pub Package](https://img.shields.io/pub/v/single_child_two_dimensional_scroll_view.svg)](https://pub.dev/packages/single_child_two_dimensional_scroll_view)
-
 [![GitHub Issues](https://img.shields.io/github/issues/sjhorn/single_child_two_dimensional_scroll_view.svg)](https://github.com/sjhorn/single_child_two_dimensional_scroll_view/issues)
-
 [![GitHub Forks](https://img.shields.io/github/forks/sjhorn/single_child_two_dimensional_scroll_view.svg)](https://github.com/sjhorn/single_child_two_dimensional_scroll_view/network)
-
 [![GitHub Stars](https://img.shields.io/github/stars/sjhorn/single_child_two_dimensional_scroll_view.svg)](https://github.com/sjhorn/single_child_two_dimensional_scroll_view/stargazers)
-
 ![GitHub License](https://img.shields.io/github/license/sjhorn/single_child_two_dimensional_scroll_view)
 
 A package that provides a widget that allows a single child to scroll in two dimensions, built on the two-dimensional foundation of the Flutter framework.
