@@ -15,11 +15,11 @@ class _MyAppState extends State<MyApp> {
   late final ScrollController verticalScrollController = ScrollController();
   late final ScrollController horintalScrollController = ScrollController();
   late final key = GlobalKey();
+  bool _isLeftToRight = true;
   @override
   void dispose() {
     verticalScrollController.dispose();
     horintalScrollController.dispose();
-
     super.dispose();
   }
 
@@ -29,25 +29,33 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Example 2D Single Child Scroll View',
       home: Scaffold(
-          body: Scrollbar(
-        controller: verticalScrollController,
-        child: Scrollbar(
-          controller: horintalScrollController,
-          child: SingleChildTwoDimensionalScrollView(
-            verticalController: verticalScrollController,
-            horizontalController: horintalScrollController,
-            child: ColoredBox(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                    padding: const EdgeInsets.all(8),
-                    color: Colors.blue,
-                    width: 1500,
-                    height: 1500,
-                    child: Center(
-                        child:
-                            Text(List.filled(1400, 'hello world').join(' ')))),
+          body: GestureDetector(
+        onTap: () => setState(() {
+          _isLeftToRight = !_isLeftToRight;
+        }),
+        child: Directionality(
+          textDirection: _isLeftToRight ? TextDirection.ltr : TextDirection.rtl,
+          child: Scrollbar(
+            controller: verticalScrollController,
+            child: Scrollbar(
+              controller: horintalScrollController,
+              child: SingleChildTwoDimensionalScrollView(
+                verticalController: verticalScrollController,
+                horizontalController: horintalScrollController,
+                child: ColoredBox(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        padding: const EdgeInsets.all(8),
+                        color: Colors.blue,
+                        width: 1500,
+                        height: 1500,
+                        child: Center(
+                            child: Text(
+                                List.filled(1400, 'hello world').join(' ')))),
+                  ),
+                ),
               ),
             ),
           ),

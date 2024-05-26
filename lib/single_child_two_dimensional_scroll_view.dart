@@ -318,9 +318,10 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
     switch (clipBehavior) {
       case Clip.none:
         return false;
-      case Clip.hardEdge:
-      case Clip.antiAlias:
-      case Clip.antiAliasWithSaveLayer:
+      default:
+        // case Clip.hardEdge:
+        // case Clip.antiAlias:
+        // case Clip.antiAliasWithSaveLayer:
         return offset.dx < 0 ||
             offset.dy < 0 ||
             offset.dx + firstChild!.size.width > size.width ||
