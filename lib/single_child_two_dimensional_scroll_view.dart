@@ -83,6 +83,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
     this.hitTestBehavior = HitTestBehavior.opaque,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.diagonalDragBehavior = DiagonalDragBehavior.none,
+    this.restorationId,
   });
 
   /// The amount of space by which to inset the child.
@@ -174,6 +175,9 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
   /// {@macro flutter.widgets.scrollable.diagonalDragBehavior}
   final DiagonalDragBehavior diagonalDragBehavior;
 
+  /// {@macro flutter.widgets.scrollable.restorationId}
+  final String? restorationId;
+
   @override
   Widget build(BuildContext context) {
     Widget contents = child ?? const SizedBox.shrink();
@@ -199,6 +203,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
       clipBehavior: clipBehavior,
       hitTestBehavior: hitTestBehavior,
       diagonalDragBehavior: diagonalDragBehavior,
+      restorationId: restorationId,
     );
   }
 }
@@ -213,7 +218,74 @@ class _SingleChild2DScrollView extends TwoDimensionalScrollView {
     super.clipBehavior = Clip.hardEdge,
     super.hitTestBehavior = HitTestBehavior.opaque,
     super.diagonalDragBehavior,
+    this.restorationId,
   });
+
+  /// {@macro flutter.widgets.scrollable.restorationId}
+  final String? restorationId;
+
+  @override
+  Widget build(BuildContext context) {
+    assert(
+      axisDirectionToAxis(verticalDetails.direction) == Axis.vertical,
+    );
+    assert(
+      axisDirectionToAxis(horizontalDetails.direction) == Axis.horizontal,
+    );
+
+    ScrollableDetails mainAxisDetails = switch (mainAxis) {
+      Axis.vertical => verticalDetails,
+      Axis.horizontal => horizontalDetails,
+    };
+
+    final bool effectivePrimary = primary ??
+        mainAxisDetails.controller == null &&
+            PrimaryScrollController.shouldInherit(context, mainAxis);
+
+    if (effectivePrimary) {
+      assert(mainAxisDetails.controller == null);
+      mainAxisDetails = mainAxisDetails.copyWith(controller: PrimaryScrollController.of(context));
+    }
+
+    final scrollable = TwoDimensionalScrollable(
+      horizontalDetails: switch (mainAxis) {
+        Axis.horizontal => mainAxisDetails,
+        Axis.vertical => horizontalDetails,
+      },
+      verticalDetails: switch (mainAxis) {
+        Axis.vertical => mainAxisDetails,
+        Axis.horizontal => verticalDetails,
+      },
+      diagonalDragBehavior: diagonalDragBehavior,
+      viewportBuilder: buildViewport,
+      dragStartBehavior: dragStartBehavior,
+      hitTestBehavior: hitTestBehavior,
+      restorationId: restorationId,
+    );
+
+    final Widget scrollableResult =
+        effectivePrimary ? PrimaryScrollController.none(child: scrollable) : scrollable;
+
+    final ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior =
+        keyboardDismissBehavior ??
+            ScrollConfiguration.of(context).getKeyboardDismissBehavior(context);
+
+    if (effectiveKeyboardDismissBehavior == ScrollViewKeyboardDismissBehavior.onDrag) {
+      return NotificationListener<ScrollUpdateNotification>(
+        child: scrollableResult,
+        onNotification: (ScrollUpdateNotification notification) {
+          final FocusScopeNode currentScope = FocusScope.of(context);
+          if (notification.dragDetails != null &&
+              !currentScope.hasPrimaryFocus &&
+              currentScope.hasFocus) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+          return false;
+        },
+      );
+    }
+    return scrollableResult;
+  }
 
   @override
   Widget buildViewport(

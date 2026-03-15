@@ -1098,6 +1098,24 @@ void main() {
     });
   });
 
+  testWidgets(
+      'SingleChildTwoDimensionalScrollView forwards restorationId to TwoDimensionalScrollable',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SingleChildTwoDimensionalScrollView(
+          restorationId: 'test_restoration',
+          child: Container(height: 2000.0),
+        ),
+      ),
+    );
+
+    final TwoDimensionalScrollable scrollable =
+        tester.widget<TwoDimensionalScrollable>(find.byType(TwoDimensionalScrollable));
+    expect(scrollable.restorationId, 'test_restoration');
+  });
+
   testWidgets('SingleChildTwoDimensionalScrollView respects hitTestBehavior',
       (WidgetTester tester) async {
     // Default hitTestBehavior is HitTestBehavior.opaque.
