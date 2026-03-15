@@ -1280,4 +1280,38 @@ void main() {
     await tester.pumpAndSettle();
     expect(textField.focusNode!.hasFocus, isTrue);
   });
+
+  testWidgets('SingleChildTwoDimensionalScrollView uses AxisDirection.right for horizontal in LTR',
+      (WidgetTester tester) async {
+    // The test window size is Size(800.0, 600.0).
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.ltr,
+        child: SingleChildTwoDimensionalScrollView(
+          child: SizedBox(width: 2000.0, height: 600.0),
+        ),
+      ),
+    );
+
+    final TwoDimensionalScrollable scrollable =
+        tester.widget<TwoDimensionalScrollable>(find.byType(TwoDimensionalScrollable));
+    expect(scrollable.horizontalDetails.direction, AxisDirection.right);
+  });
+
+  testWidgets('SingleChildTwoDimensionalScrollView uses AxisDirection.left for horizontal in RTL',
+      (WidgetTester tester) async {
+    // The test window size is Size(800.0, 600.0).
+    await tester.pumpWidget(
+      const Directionality(
+        textDirection: TextDirection.rtl,
+        child: SingleChildTwoDimensionalScrollView(
+          child: SizedBox(width: 2000.0, height: 600.0),
+        ),
+      ),
+    );
+
+    final TwoDimensionalScrollable scrollable =
+        tester.widget<TwoDimensionalScrollable>(find.byType(TwoDimensionalScrollable));
+    expect(scrollable.horizontalDetails.direction, AxisDirection.left);
+  });
 }
