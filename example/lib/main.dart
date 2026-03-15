@@ -4,15 +4,46 @@ import 'package:single_child_two_dimensional_scroll_view/'
 
 void main() => runApp(const MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int _selectedIndex = 0;
+
+  static const List<Widget> _pages = [
+    ScrollViewPage(),
+    TableExamplePage(),
+  ];
+
+  @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '2D Scroll View Example',
-      home: ScrollViewPage(),
+      home: Scaffold(
+        body: IndexedStack(
+          index: _selectedIndex,
+          children: _pages,
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: (index) => setState(() => _selectedIndex = index),
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.swap_vert),
+              label: 'Scroll',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.table_chart),
+              label: 'Table',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -89,6 +120,103 @@ class _ScrollViewPageState extends State<ScrollViewPage> {
                   ),
                 ),
               ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// A page demonstrating a table-like layout that scrolls in both dimensions.
+///
+/// The table is built using plain [Column] and [Row] widgets with fixed-size
+/// [Container] cells. We cannot use [ListView.builder] (or any scrollable
+/// widget such as [GridView]) for the inner content, because nesting a
+/// scrollable inside [SingleChildTwoDimensionalScrollView] conflicts with
+/// Flutter's scroll-physics negotiation — the inner scrollable would consume
+/// the gesture before the outer 2-D scroll view ever sees it.
+class TableExamplePage extends StatefulWidget {
+  const TableExamplePage({super.key});
+
+  @override
+  State<TableExamplePage> createState() => _TableExamplePageState();
+}
+
+class _TableExamplePageState extends State<TableExamplePage> {
+  static const int _rows = 50;
+  static const int _columns = 20;
+  static const double _cellWidth = 120;
+  static const double _cellHeight = 48;
+
+  late final ScrollController _verticalController = ScrollController();
+  late final ScrollController _horizontalController = ScrollController();
+
+  @override
+  void dispose() {
+    _verticalController.dispose();
+    _horizontalController.dispose();
+    super.dispose();
+  }
+
+  Widget _headerCell(int column) {
+    return Container(
+      width: _cellWidth,
+      height: _cellHeight,
+      decoration: BoxDecoration(
+        color: Colors.blue.shade100,
+        border: Border.all(color: Colors.blue.shade300),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        'Col ${column + 1}',
+        style: const TextStyle(fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _dataCell(int row, int column) {
+    return Container(
+      width: _cellWidth,
+      height: _cellHeight,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      alignment: Alignment.center,
+      child: Text('Row ${row + 1}, Col ${column + 1}'),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Table Example'),
+      ),
+      body: Scrollbar(
+        controller: _verticalController,
+        child: Scrollbar(
+          controller: _horizontalController,
+          child: SingleChildTwoDimensionalScrollView(
+            verticalController: _verticalController,
+            horizontalController: _horizontalController,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header row
+                Row(
+                  children: [
+                    for (int c = 0; c < _columns; c++) _headerCell(c),
+                  ],
+                ),
+                // Data rows
+                for (int r = 0; r < _rows; r++)
+                  Row(
+                    children: [
+                      for (int c = 0; c < _columns; c++) _dataCell(r, c),
+                    ],
+                  ),
+              ],
             ),
           ),
         ),
