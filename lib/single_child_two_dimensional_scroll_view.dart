@@ -25,7 +25,7 @@ import 'package:flutter/rendering.dart';
 ///
 /// Doing so, however, usually results in a conflict between the [Column]/[Row],
 /// which typically tries to grow as big as it can, and the
-/// [SingleChildTowDimensional ScrollView], which provides its children with
+/// [SingleChildTwoDimensionalScrollView], which provides its children with
 /// an infinite amount of space.
 ///
 /// To resolve this apparent conflict, there are a couple of techniques, as
@@ -108,7 +108,23 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
   /// Defaults to false.
   final bool reverseHorizontal;
 
-  /// {@macro flutter.widgets.scroll_view.primary}
+  /// Whether this is the primary scroll view associated with the parent
+  /// [PrimaryScrollController].
+  ///
+  /// When this is true, the scroll view is scrollable even if it does not have
+  /// sufficient content to actually scroll. Otherwise, by default the user can
+  /// only scroll the view if it has sufficient content.
+  ///
+  /// On iOS, this also identifies the scroll view that will scroll to top in
+  /// response to a tap in the status bar.
+  ///
+  /// Cannot be true while a [ScrollController] is provided to
+  /// [verticalController] or [horizontalController], only one ScrollController
+  /// can be associated with a ScrollView.
+  ///
+  /// Defaults to null. When null, and a controller is not provided,
+  /// [PrimaryScrollController.shouldInherit] is used to decide automatic
+  /// inheritance.
   final bool? primary;
 
   /// How the vertical scroll axis should respond to user input.
@@ -133,7 +149,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
   /// [ScrollController.animateTo]).
   final ScrollController? verticalController;
 
-  // How the horizontal scroll view should respond to user input.
+  /// How the horizontal scroll view should respond to user input.
   ///
   /// For example, determines how the scroll view continues to animate after the
   /// user stops dragging the scroll view.
@@ -141,7 +157,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
   /// Defaults to matching platform conventions.
   final ScrollPhysics? horizontalPhysics;
 
-  /// An object that can be used to control the position to which this vertical
+  /// An object that can be used to control the position to which this horizontal
   /// scroll axis is scrolled.
   ///
   /// Must be null if [primary] is true.
@@ -174,7 +190,11 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
   /// {@macro flutter.widgets.scroll_view.keyboardDismissBehavior}
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
-  /// {@macro flutter.widgets.scrollable.diagonalDragBehavior}
+  /// Whether scrolling gestures should lock to one axis, allow free movement
+  /// in both axes, or be evaluated on a weighted scale.
+  ///
+  /// Defaults to [DiagonalDragBehavior.none], locking axes to receive input one
+  /// at a time.
   final DiagonalDragBehavior diagonalDragBehavior;
 
   /// {@macro flutter.widgets.scrollable.restorationId}
