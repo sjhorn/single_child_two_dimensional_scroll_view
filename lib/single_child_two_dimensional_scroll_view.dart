@@ -80,6 +80,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
     this.child,
     this.dragStartBehavior = DragStartBehavior.start,
     this.clipBehavior = Clip.hardEdge,
+    this.hitTestBehavior = HitTestBehavior.opaque,
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.diagonalDragBehavior = DiagonalDragBehavior.none,
   });
@@ -164,6 +165,9 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
   /// Defaults to [Clip.hardEdge].
   final Clip clipBehavior;
 
+  /// {@macro flutter.widgets.scrollable.hitTestBehavior}
+  final HitTestBehavior hitTestBehavior;
+
   /// {@macro flutter.widgets.scroll_view.keyboardDismissBehavior}
   final ScrollViewKeyboardDismissBehavior keyboardDismissBehavior;
 
@@ -193,6 +197,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
       primary: primary,
       keyboardDismissBehavior: keyboardDismissBehavior,
       clipBehavior: clipBehavior,
+      hitTestBehavior: hitTestBehavior,
       diagonalDragBehavior: diagonalDragBehavior,
     );
   }
@@ -206,6 +211,7 @@ class _SingleChild2DScrollView extends TwoDimensionalScrollView {
     super.primary,
     super.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     super.clipBehavior = Clip.hardEdge,
+    super.hitTestBehavior = HitTestBehavior.opaque,
     super.diagonalDragBehavior,
   });
 

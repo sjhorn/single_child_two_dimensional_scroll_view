@@ -1098,6 +1098,28 @@ void main() {
     });
   });
 
+  testWidgets('SingleChildTwoDimensionalScrollView respects hitTestBehavior',
+      (WidgetTester tester) async {
+    // Default hitTestBehavior is HitTestBehavior.opaque.
+    await tester.pumpWidget(
+      SingleChildTwoDimensionalScrollView(
+        child: Container(height: 2000.0),
+      ),
+    );
+    TwoDimensionalScrollable scrollable = tester.widget(find.byType(TwoDimensionalScrollable));
+    expect(scrollable.hitTestBehavior, HitTestBehavior.opaque);
+
+    // Custom hitTestBehavior is forwarded to TwoDimensionalScrollable.
+    await tester.pumpWidget(
+      SingleChildTwoDimensionalScrollView(
+        hitTestBehavior: HitTestBehavior.translucent,
+        child: Container(height: 2000.0),
+      ),
+    );
+    scrollable = tester.widget(find.byType(TwoDimensionalScrollable));
+    expect(scrollable.hitTestBehavior, HitTestBehavior.translucent);
+  });
+
   testWidgets('keyboardDismissBehavior tests', (WidgetTester tester) async {
     final List<FocusNode> focusNodes = List<FocusNode>.generate(50, (int i) => FocusNode());
     addTearDown(() {
