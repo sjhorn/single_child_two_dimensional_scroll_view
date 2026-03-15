@@ -48,5 +48,4 @@ The package uses the two-dimensional foundation from the Flutter framework,
 meaning most of the core functionality of 2D scrolling is not implemented here.
 This also means any subclass of the foundation can create different 2D scrolling
 widgets and be added to the collection. If you want to contribute to
-this package, you can open a pull request in [Flutter Packages](https://github.com/flutter/packages)
-and add the tag "p: two_dimensional_scrollables".
+this package, you can open a pull request.
