@@ -12,6 +12,7 @@
 #   ./scripts/ci/github.sh create --title "<t>" --body-file /tmp/body.md --label "chore" --repo "owner/repo"
 #   ./scripts/ci/github.sh pr <number>           # push + create PR (auto title/body)
 #   ./scripts/ci/github.sh pr <number> --title "<t>" --body-file /tmp/body.md --repo "owner/repo"
+#   ./scripts/ci/github.sh push                      # push current branch (for updating PRs)
 #   ./scripts/ci/github.sh update <number> --body-file /tmp/body.md  # update issue body
 #   ./scripts/ci/github.sh finish <number>       # label in-review
 #   ./scripts/ci/github.sh done <number>         # label done + close
@@ -146,6 +147,12 @@ TEMPLATE
     echo "PR created from $BRANCH, issue #$NUM marked in-review"
     ;;
 
+  push)
+    BRANCH=$(git branch --show-current)
+    git push origin "$BRANCH"
+    echo "Pushed $BRANCH"
+    ;;
+
   update)
     NUM=""
     BODY_FILE=""
@@ -194,7 +201,7 @@ TEMPLATE
     ;;
 
   help|*)
-    echo "Usage: github.sh {status|list|view|start|create|pr|update|finish|done} [args]"
+    echo "Usage: github.sh {status|list|view|start|create|pr|push|update|finish|done} [args]"
     echo ""
     echo "Commands:"
     echo "  status              Check gh auth"
@@ -210,6 +217,7 @@ TEMPLATE
     echo "    --title <t>       PR title (default: issue title)"
     echo "    --body-file <f>   PR body from file (default: 'Closes #N')"
     echo "    --repo <r>        Target repo (default: current)"
+    echo "  push                Push current branch (for updating existing PRs)"
     echo "  update <number>     Update issue body"
     echo "    --body-file <f>   New body content from file"
     echo "    --repo <r>        Target repo (default: current)"

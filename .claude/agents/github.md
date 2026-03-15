@@ -18,6 +18,7 @@ scripts/ci/github.sh create "<title>"                # create new issue (templat
 scripts/ci/github.sh create --title "<t>" --body-file /tmp/body.md --label "chore" --repo "owner/repo"
 scripts/ci/github.sh pr <number>                     # push branch + create PR (auto title/body)
 scripts/ci/github.sh pr <number> --title "<t>" --body-file /tmp/pr_body.md --repo "owner/repo"
+scripts/ci/github.sh push                            # push current branch (update existing PR)
 scripts/ci/github.sh update <number> --body-file /tmp/body.md  # update issue body
 scripts/ci/github.sh finish <number>                 # label in-review
 scripts/ci/github.sh done <number>                   # label done + close
@@ -46,4 +47,4 @@ Check off the acceptance criteria in the issue body:
 
 `ready` → `in-progress` → `in-review` → `done` | `blocked`
 
-Never run `git push` directly — `github.sh pr` handles the push internally. You never modify source code. You manage the workflow around it.
+Never run `git push` directly — use `github.sh pr` (new PR) or `github.sh push` (update existing PR). You never modify source code. You manage the workflow around it.
