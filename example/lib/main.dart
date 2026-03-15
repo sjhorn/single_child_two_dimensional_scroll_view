@@ -51,9 +51,7 @@ class _MyAppState extends State<MyApp> {
                         color: Colors.blue,
                         width: 1500,
                         height: 1500,
-                        child: Center(
-                            child: Text(
-                                List.filled(1400, 'hello world').join(' ')))),
+                        child: Center(child: Text(List.filled(1400, 'hello world').join(' ')))),
                   ),
                 ),
               ),
