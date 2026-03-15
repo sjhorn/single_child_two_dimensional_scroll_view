@@ -20,8 +20,8 @@ class TestScrollPosition extends ScrollPositionWithSingleContext {
 
 class TestScrollController extends ScrollController {
   @override
-  ScrollPosition createScrollPosition(ScrollPhysics physics,
-      ScrollContext context, ScrollPosition? oldPosition) {
+  ScrollPosition createScrollPosition(
+      ScrollPhysics physics, ScrollContext context, ScrollPosition? oldPosition) {
     return TestScrollPosition(
       physics: physics,
       state: context,
@@ -60,11 +60,9 @@ void main() {
 
     // 1st, check that the render object has received the default clip behavior.
     final dynamic renderObject = tester.allRenderObjects
-        .where((RenderObject o) =>
-            o.runtimeType.toString() == '_RenderSingleChild2DViewPort')
+        .where((RenderObject o) => o.runtimeType.toString() == '_RenderSingleChild2DViewPort')
         .first;
-    expect(renderObject.clipBehavior,
-        equals(Clip.hardEdge)); // ignore: avoid_dynamic_calls
+    expect(renderObject.clipBehavior, equals(Clip.hardEdge)); // ignore: avoid_dynamic_calls
 
     // 2nd, height == window.height test: check that the painting context does not call pushClipRect .
     TestClipPaintingContext context = TestClipPaintingContext();
@@ -112,16 +110,13 @@ void main() {
 
   testWidgets('SingleChildTwoDimensionalScrollView respects clipBehavior',
       (WidgetTester tester) async {
-    await tester.pumpWidget(
-        SingleChildTwoDimensionalScrollView(child: Container(height: 2000.0)));
+    await tester.pumpWidget(SingleChildTwoDimensionalScrollView(child: Container(height: 2000.0)));
 
     // 1st, check that the render object has received the default clip behavior.
     final dynamic renderObject = tester.allRenderObjects
-        .where((RenderObject o) =>
-            o.runtimeType.toString() == '_RenderSingleChild2DViewPort')
+        .where((RenderObject o) => o.runtimeType.toString() == '_RenderSingleChild2DViewPort')
         .first;
-    expect(renderObject.clipBehavior,
-        equals(Clip.hardEdge)); // ignore: avoid_dynamic_calls
+    expect(renderObject.clipBehavior, equals(Clip.hardEdge)); // ignore: avoid_dynamic_calls
 
     // 2nd, check that the painting context has received the default clip behavior.
     final TestClipPaintingContext context = TestClipPaintingContext();
@@ -130,8 +125,7 @@ void main() {
 
     // 3rd, check that the underlying Scrollable(s) have the same clipBehavior
     // Regression test for https://github.com/flutter/flutter/issues/133330
-    Finder scrollable =
-        find.byWidgetPredicate((Widget widget) => widget is Scrollable);
+    Finder scrollable = find.byWidgetPredicate((Widget widget) => widget is Scrollable);
     expect(
       (tester.widgetList(scrollable).first as Scrollable).clipBehavior,
       Clip.hardEdge,
@@ -144,8 +138,7 @@ void main() {
     // 4th, pump a new widget to check that the render object can update its clip behavior.
     await tester.pumpWidget(SingleChildTwoDimensionalScrollView(
         clipBehavior: Clip.antiAlias, child: Container(height: 2000.0)));
-    expect(renderObject.clipBehavior,
-        equals(Clip.antiAlias)); // ignore: avoid_dynamic_calls
+    expect(renderObject.clipBehavior, equals(Clip.antiAlias)); // ignore: avoid_dynamic_calls
 
     // 5th, check that a non-default clip behavior can be sent to the painting context.
     renderObject.paint(context, Offset.zero); // ignore: avoid_dynamic_calls
@@ -153,8 +146,7 @@ void main() {
 
     // 6th, check that the underlying Scrollable has the same clipBehavior
     // Regression test for https://github.com/flutter/flutter/issues/133330
-    scrollable =
-        find.byWidgetPredicate((Widget widget) => widget is Scrollable);
+    scrollable = find.byWidgetPredicate((Widget widget) => widget is Scrollable);
     expect(
       (tester.widgetList(scrollable).first as Scrollable).clipBehavior,
       Clip.antiAlias,
@@ -165,8 +157,7 @@ void main() {
     );
   });
 
-  testWidgets('SingleChildTwoDimensionalScrollView control test',
-      (WidgetTester tester) async {
+  testWidgets('SingleChildTwoDimensionalScrollView control test', (WidgetTester tester) async {
     await tester.pumpWidget(SingleChildTwoDimensionalScrollView(
       child: Container(
         height: 2000.0,
@@ -177,14 +168,12 @@ void main() {
     final RenderBox box = tester.renderObject(find.byType(Container));
     expect(box.localToGlobal(Offset.zero), equals(Offset.zero));
 
-    await tester.drag(find.byType(SingleChildTwoDimensionalScrollView),
-        const Offset(0.0, -200.0));
+    await tester.drag(find.byType(SingleChildTwoDimensionalScrollView), const Offset(0.0, -200.0));
     await tester.pumpAndSettle();
     expect(box.localToGlobal(Offset.zero), equals(const Offset(0.0, -200.0)));
   });
 
-  testWidgets('Changing controllers changes scroll position',
-      (WidgetTester tester) async {
+  testWidgets('Changing controllers changes scroll position', (WidgetTester tester) async {
     final TestScrollController verticalController = TestScrollController();
     final TestScrollController horizontalController = TestScrollController();
     addTearDown(verticalController.dispose);
@@ -212,8 +201,7 @@ void main() {
     expect(scrollable.horizontalScrollable.position, isA<TestScrollPosition>());
   });
 
-  testWidgets('Sets PrimaryScrollController when primary',
-      (WidgetTester tester) async {
+  testWidgets('Sets PrimaryScrollController when primary', (WidgetTester tester) async {
     final ScrollController primaryScrollController = ScrollController();
     addTearDown(primaryScrollController.dispose);
     await tester.pumpWidget(PrimaryScrollController(
@@ -232,8 +220,7 @@ void main() {
     expect(scrollable.verticalDetails.controller, primaryScrollController);
   });
 
-  testWidgets(
-      'Changing scroll controller inside dirty layout builder does not assert',
+  testWidgets('Changing scroll controller inside dirty layout builder does not assert',
       (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
     addTearDown(controller.dispose);
@@ -274,13 +261,11 @@ void main() {
 
   testWidgets('SingleChildTwoDimensionalScrollView are not primary by default',
       (WidgetTester tester) async {
-    const SingleChildTwoDimensionalScrollView view =
-        SingleChildTwoDimensionalScrollView();
+    const SingleChildTwoDimensionalScrollView view = SingleChildTwoDimensionalScrollView();
     expect(view.primary, isNull);
   });
 
-  testWidgets(
-      'SingleChildTwoDimensionalScrollView with controllers are not primary by default',
+  testWidgets('SingleChildTwoDimensionalScrollView with controllers are not primary by default',
       (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
     addTearDown(controller.dispose);
@@ -290,8 +275,7 @@ void main() {
     expect(view.primary, isNull);
   });
 
-  testWidgets(
-      'SingleChildScrollViews use PrimaryScrollController by default on mobile',
+  testWidgets('SingleChildScrollViews use PrimaryScrollController by default on mobile',
       (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
     addTearDown(controller.dispose);
@@ -327,8 +311,7 @@ void main() {
           child: SingleChildTwoDimensionalScrollView(
             primary: true,
             child: Container(
-              constraints:
-                  const BoxConstraints(maxHeight: 200.0, maxWidth: 200.0),
+              constraints: const BoxConstraints(maxHeight: 200.0, maxWidth: 200.0),
               child: ListView(key: innerKey, primary: true),
             ),
           ),
@@ -345,8 +328,7 @@ void main() {
     expect(innerScrollable.controller, isNull);
   });
 
-  testWidgets('SingleChildTwoDimensionalScrollView semantics',
-      (WidgetTester tester) async {
+  testWidgets('SingleChildTwoDimensionalScrollView semantics', (WidgetTester tester) async {
     final SemanticsTester semantics = SemanticsTester(tester);
     final ScrollController controller = ScrollController();
     addTearDown(controller.dispose);
@@ -369,8 +351,7 @@ void main() {
       ),
     );
 
-    List<TestSemantics> generateSemanticsChildren(
-        {int startHidden = -1, int endHidden = 30}) {
+    List<TestSemantics> generateSemanticsChildren({int startHidden = -1, int endHidden = 30}) {
       final List<TestSemantics> children = <TestSemantics>[];
       for (int index = 0; index < 30; index += 1) {
         final bool isHidden = index <= startHidden || index >= endHidden;
@@ -393,6 +374,7 @@ void main() {
               ],
               actions: <SemanticsAction>[
                 SemanticsAction.scrollUp,
+                SemanticsAction.scrollToOffset,
               ],
               children: <TestSemantics>[
                 TestSemantics(
@@ -423,14 +405,14 @@ void main() {
               actions: <SemanticsAction>[
                 SemanticsAction.scrollUp,
                 SemanticsAction.scrollDown,
+                SemanticsAction.scrollToOffset,
               ],
               children: <TestSemantics>[
                 TestSemantics(
                   flags: <SemanticsFlag>[
                     SemanticsFlag.hasImplicitScrolling,
                   ],
-                  children:
-                      generateSemanticsChildren(startHidden: 14, endHidden: 18),
+                  children: generateSemanticsChildren(startHidden: 14, endHidden: 18),
                 ),
               ],
             ),
@@ -453,6 +435,7 @@ void main() {
               ],
               actions: <SemanticsAction>[
                 SemanticsAction.scrollDown,
+                SemanticsAction.scrollToOffset,
               ],
               children: <TestSemantics>[
                 TestSemantics(
@@ -472,8 +455,7 @@ void main() {
     semantics.dispose();
   });
 
-  testWidgets(
-      'SingleChildTwoDimensionalScrollView semantics clips cover entire child vertical',
+  testWidgets('SingleChildTwoDimensionalScrollView semantics clips cover entire child vertical',
       (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
     addTearDown(controller.dispose);
@@ -490,8 +472,7 @@ void main() {
         ),
       ),
     );
-    final RenderObject scrollRenderObject =
-        tester.renderObject(find.byKey(scrollView));
+    final RenderObject scrollRenderObject = tester.renderObject(find.byKey(scrollView));
     RenderAbstractViewport? viewport;
     void findsRenderViewPort(RenderObject child) {
       if (viewport != null) {
@@ -506,8 +487,7 @@ void main() {
 
     scrollRenderObject.visitChildren(findsRenderViewPort);
     expect(viewport, isNotNull);
-    final RenderObject childRenderObject =
-        tester.renderObject(find.byKey(childBox));
+    final RenderObject childRenderObject = tester.renderObject(find.byKey(childBox));
     Rect semanticsClip = viewport!.describeSemanticsClip(childRenderObject)!;
     expect(semanticsClip.size.height, length);
 
@@ -517,8 +497,7 @@ void main() {
     expect(semanticsClip.size.height, length);
   });
 
-  testWidgets(
-      'SingleChildTwoDimensionalScrollView semantics clips cover entire child',
+  testWidgets('SingleChildTwoDimensionalScrollView semantics clips cover entire child',
       (WidgetTester tester) async {
     final ScrollController controller = ScrollController();
     addTearDown(controller.dispose);
@@ -535,8 +514,7 @@ void main() {
         ),
       ),
     );
-    final RenderObject scrollRenderObject =
-        tester.renderObject(find.byKey(scrollView));
+    final RenderObject scrollRenderObject = tester.renderObject(find.byKey(scrollView));
     RenderAbstractViewport? viewport;
     void findsRenderViewPort(RenderObject child) {
       if (viewport != null) {
@@ -551,8 +529,7 @@ void main() {
 
     scrollRenderObject.visitChildren(findsRenderViewPort);
     expect(viewport, isNotNull);
-    final RenderObject childRenderObject =
-        tester.renderObject(find.byKey(childBox));
+    final RenderObject childRenderObject = tester.renderObject(find.byKey(childBox));
     Rect semanticsClip = viewport!.describeSemanticsClip(childRenderObject)!;
     expect(semanticsClip.size.width, length);
 
@@ -565,8 +542,7 @@ void main() {
   testWidgets(
       'SingleChildTwoDimensionalScrollView getOffsetToReveal - will not assert on axis mismatch',
       (WidgetTester tester) async {
-    final ScrollController controller =
-        ScrollController(initialScrollOffset: 300.0);
+    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
     addTearDown(controller.dispose);
     List<Widget> children;
     await tester.pumpWidget(
@@ -602,8 +578,7 @@ void main() {
 
   testWidgets('SingleChildTwoDimensionalScrollView getOffsetToReveal - down',
       (WidgetTester tester) async {
-    final ScrollController controller =
-        ScrollController(initialScrollOffset: 300.0);
+    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
     addTearDown(controller.dispose);
     List<Widget> children;
     await tester.pumpWidget(
@@ -642,21 +617,20 @@ void main() {
     expect(revealed.offset, 400.0);
     expect(revealed.rect, const Rect.fromLTWH(0.0, 100.0, 300.0, 100.0));
 
-    revealed = viewport.getOffsetToReveal(target, 0.0,
-        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0));
+    revealed =
+        viewport.getOffsetToReveal(target, 0.0, rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0));
     expect(revealed.offset, 540.0);
     expect(revealed.rect, const Rect.fromLTWH(40.0, 0.0, 10.0, 10.0));
 
-    revealed = viewport.getOffsetToReveal(target, 1.0,
-        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0));
+    revealed =
+        viewport.getOffsetToReveal(target, 1.0, rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0));
     expect(revealed.offset, 350.0);
     expect(revealed.rect, const Rect.fromLTWH(40.0, 190.0, 10.0, 10.0));
   });
 
   testWidgets('SingleChildTwoDimensionalScrollView getOffsetToReveal - up',
       (WidgetTester tester) async {
-    final ScrollController controller =
-        ScrollController(initialScrollOffset: 300.0);
+    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
     addTearDown(controller.dispose);
     final List<Widget> children = List<Widget>.generate(20, (int i) {
       return SizedBox(
@@ -696,21 +670,20 @@ void main() {
     expect(revealed.offset, 400.0);
     expect(revealed.rect, const Rect.fromLTWH(0.0, 0.0, 300.0, 100.0));
 
-    revealed = viewport.getOffsetToReveal(target, 0.0,
-        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0));
+    revealed =
+        viewport.getOffsetToReveal(target, 0.0, rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0));
     expect(revealed.offset, 550.0);
     expect(revealed.rect, const Rect.fromLTWH(40.0, 190.0, 10.0, 10.0));
 
-    revealed = viewport.getOffsetToReveal(target, 1.0,
-        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0));
+    revealed =
+        viewport.getOffsetToReveal(target, 1.0, rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0));
     expect(revealed.offset, 360.0);
     expect(revealed.rect, const Rect.fromLTWH(40.0, 0.0, 10.0, 10.0));
   });
 
   testWidgets('SingleChildTwoDimensionalScrollView getOffsetToReveal - right',
       (WidgetTester tester) async {
-    final ScrollController controller =
-        ScrollController(initialScrollOffset: 300.0);
+    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
     addTearDown(controller.dispose);
     List<Widget> children;
 
@@ -742,8 +715,7 @@ void main() {
         tester.allRenderObjects.whereType<RenderAbstractViewport>().first;
 
     final RenderObject target = tester.renderObject(find.byWidget(children[5]));
-    RevealedOffset revealed =
-        viewport.getOffsetToReveal(target, 0.0, axis: Axis.horizontal);
+    RevealedOffset revealed = viewport.getOffsetToReveal(target, 0.0, axis: Axis.horizontal);
     expect(revealed.offset, 500.0);
     expect(revealed.rect, const Rect.fromLTWH(0.0, 0.0, 100.0, 300.0));
 
@@ -752,22 +724,19 @@ void main() {
     expect(revealed.rect, const Rect.fromLTWH(100.0, 0.0, 100.0, 300.0));
 
     revealed = viewport.getOffsetToReveal(target, 0.0,
-        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0),
-        axis: Axis.horizontal);
+        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0), axis: Axis.horizontal);
     expect(revealed.offset, 540.0);
     expect(revealed.rect, const Rect.fromLTWH(0.0, 40.0, 10.0, 10.0));
 
     revealed = viewport.getOffsetToReveal(target, 1.0,
-        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0),
-        axis: Axis.horizontal);
+        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0), axis: Axis.horizontal);
     expect(revealed.offset, 350.0);
     expect(revealed.rect, const Rect.fromLTWH(190.0, 40.0, 10.0, 10.0));
   });
 
   testWidgets('SingleChildTwoDimensionalScrollView getOffsetToReveal - left',
       (WidgetTester tester) async {
-    final ScrollController controller =
-        ScrollController(initialScrollOffset: 300.0);
+    final ScrollController controller = ScrollController(initialScrollOffset: 300.0);
     addTearDown(controller.dispose);
     final List<Widget> children = List<Widget>.generate(20, (int i) {
       return SizedBox(
@@ -800,8 +769,7 @@ void main() {
         tester.allRenderObjects.whereType<RenderAbstractViewport>().first;
 
     final RenderObject target = tester.renderObject(find.byWidget(children[5]));
-    RevealedOffset revealed =
-        viewport.getOffsetToReveal(target, 0.0, axis: Axis.horizontal);
+    RevealedOffset revealed = viewport.getOffsetToReveal(target, 0.0, axis: Axis.horizontal);
     expect(revealed.offset, 500.0);
     expect(revealed.rect, const Rect.fromLTWH(100.0, 0.0, 100.0, 300.0));
 
@@ -810,22 +778,19 @@ void main() {
     expect(revealed.rect, const Rect.fromLTWH(0.0, 0.0, 100.0, 300.0));
 
     revealed = viewport.getOffsetToReveal(target, 0.0,
-        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0),
-        axis: Axis.horizontal);
+        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0), axis: Axis.horizontal);
     expect(revealed.offset, 550.0);
     expect(revealed.rect, const Rect.fromLTWH(190.0, 40.0, 10.0, 10.0));
 
     revealed = viewport.getOffsetToReveal(target, 1.0,
-        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0),
-        axis: Axis.horizontal);
+        rect: const Rect.fromLTWH(40.0, 40.0, 10.0, 10.0), axis: Axis.horizontal);
     expect(revealed.offset, 360.0);
     expect(revealed.rect, const Rect.fromLTWH(0.0, 40.0, 10.0, 10.0));
   });
 
   testWidgets('Nested SingleChildTwoDimensionalScrollView showOnScreen',
       (WidgetTester tester) async {
-    final List<List<Widget>> children =
-        List<List<Widget>>.generate(10, (int x) {
+    final List<List<Widget>> children = List<List<Widget>>.generate(10, (int x) {
       return List<Widget>.generate(10, (int y) {
         return SizedBox(
           key: UniqueKey(),
@@ -865,10 +830,8 @@ void main() {
             height: 200.0,
             width: 200.0,
             child: SingleChildTwoDimensionalScrollView(
-              verticalController: controllerY =
-                  ScrollController(initialScrollOffset: 400.0),
-              horizontalController: controllerX =
-                  ScrollController(initialScrollOffset: 400.0),
+              verticalController: controllerY = ScrollController(initialScrollOffset: 400.0),
+              horizontalController: controllerX = ScrollController(initialScrollOffset: 400.0),
               child: Column(
                 children: children.map((List<Widget> widgets) {
                   return Row(
@@ -995,9 +958,7 @@ void main() {
     late List<Widget> children;
 
     Future<void> buildNestedScroller(
-        {required WidgetTester tester,
-        ScrollController? inner,
-        ScrollController? outer}) {
+        {required WidgetTester tester, ScrollController? inner, ScrollController? outer}) {
       return tester.pumpWidget(
         Directionality(
           textDirection: TextDirection.ltr,
@@ -1018,8 +979,7 @@ void main() {
                       child: SingleChildTwoDimensionalScrollView(
                         verticalController: inner,
                         child: Column(
-                          children: children =
-                              List<Widget>.generate(10, (int i) {
+                          children: children = List<Widget>.generate(10, (int i) {
                             return SizedBox(
                               height: 100.0,
                               width: 300.0,
@@ -1041,8 +1001,7 @@ void main() {
       );
     }
 
-    testWidgets('in view in inner, but not in outer',
-        (WidgetTester tester) async {
+    testWidgets('in view in inner, but not in outer', (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
       addTearDown(inner.dispose);
       final ScrollController outer = ScrollController();
@@ -1061,8 +1020,7 @@ void main() {
       expect(outer.offset, 100.0);
     });
 
-    testWidgets('not in view of neither inner nor outer',
-        (WidgetTester tester) async {
+    testWidgets('not in view of neither inner nor outer', (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
       addTearDown(inner.dispose);
       final ScrollController outer = ScrollController();
@@ -1082,11 +1040,9 @@ void main() {
     });
 
     testWidgets('in view in inner and outer', (WidgetTester tester) async {
-      final ScrollController inner =
-          ScrollController(initialScrollOffset: 200.0);
+      final ScrollController inner = ScrollController(initialScrollOffset: 200.0);
       addTearDown(inner.dispose);
-      final ScrollController outer =
-          ScrollController(initialScrollOffset: 200.0);
+      final ScrollController outer = ScrollController(initialScrollOffset: 200.0);
       addTearDown(outer.dispose);
       await buildNestedScroller(
         tester: tester,
@@ -1102,13 +1058,10 @@ void main() {
       expect(inner.offset, 200.0);
     });
 
-    testWidgets('inner shown in outer, but item not visible',
-        (WidgetTester tester) async {
-      final ScrollController inner =
-          ScrollController(initialScrollOffset: 200.0);
+    testWidgets('inner shown in outer, but item not visible', (WidgetTester tester) async {
+      final ScrollController inner = ScrollController(initialScrollOffset: 200.0);
       addTearDown(inner.dispose);
-      final ScrollController outer =
-          ScrollController(initialScrollOffset: 200.0);
+      final ScrollController outer = ScrollController(initialScrollOffset: 200.0);
       addTearDown(outer.dispose);
       await buildNestedScroller(
         tester: tester,
@@ -1128,8 +1081,7 @@ void main() {
         (WidgetTester tester) async {
       final ScrollController inner = ScrollController();
       addTearDown(inner.dispose);
-      final ScrollController outer =
-          ScrollController(initialScrollOffset: 100.0);
+      final ScrollController outer = ScrollController(initialScrollOffset: 100.0);
       addTearDown(outer.dispose);
       await buildNestedScroller(
         tester: tester,
@@ -1147,8 +1099,7 @@ void main() {
   });
 
   testWidgets('keyboardDismissBehavior tests', (WidgetTester tester) async {
-    final List<FocusNode> focusNodes =
-        List<FocusNode>.generate(50, (int i) => FocusNode());
+    final List<FocusNode> focusNodes = List<FocusNode>.generate(50, (int i) => FocusNode());
     addTearDown(() {
       for (final FocusNode node in focusNodes) {
         node.dispose();

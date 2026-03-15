@@ -189,8 +189,7 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
         controller: horizontalController,
         decorationClipBehavior: clipBehavior,
       ),
-      delegate:
-          TwoDimensionalChildBuilderDelegate(builder: (_, __) => contents),
+      delegate: TwoDimensionalChildBuilderDelegate(builder: (_, __) => contents),
       primary: primary,
       keyboardDismissBehavior: keyboardDismissBehavior,
       clipBehavior: clipBehavior,
@@ -203,12 +202,12 @@ class _SingleChild2DScrollView extends TwoDimensionalScrollView {
   const _SingleChild2DScrollView({
     required super.verticalDetails,
     required super.horizontalDetails,
-    required TwoDimensionalChildDelegate delegate,
+    required super.delegate,
     super.primary,
     super.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     super.clipBehavior = Clip.hardEdge,
     super.diagonalDragBehavior,
-  }) : super(delegate: delegate);
+  });
 
   @override
   Widget buildViewport(
@@ -257,8 +256,8 @@ class _SingleChild2DViewPort extends TwoDimensionalViewport {
   }
 
   @override
-  void updateRenderObject(BuildContext context,
-      covariant _RenderSingleChild2DViewPort renderObject) {
+  void updateRenderObject(
+      BuildContext context, covariant _RenderSingleChild2DViewPort renderObject) {
     renderObject
       ..horizontalOffset = horizontalOffset
       ..horizontalAxisDirection = horizontalAxisDirection
@@ -304,8 +303,7 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
         0, clampDouble(child.size.height - viewportHeight, 0, double.infinity));
   }
 
-  final LayerHandle<ClipRectLayer> _clipRectLayer =
-      LayerHandle<ClipRectLayer>();
+  final LayerHandle<ClipRectLayer> _clipRectLayer = LayerHandle<ClipRectLayer>();
 
   @override
   void dispose() {
@@ -335,7 +333,7 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
     if (child == null) return;
     final paintOffset = parentDataOf(child).paintOffset!;
 
-    void paintChild(context, offset) {
+    void paintChild(PaintingContext context, Offset offset) {
       context.paintChild(child, offset + paintOffset);
     }
 
@@ -378,10 +376,8 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
       curve: curve,
     );
     if (newRect == null && descendant is RenderBox) {
-      double offsetX =
-          getOffsetToReveal(descendant, 0.0, axis: Axis.horizontal).offset;
-      double offsetY =
-          getOffsetToReveal(descendant, 0.0, axis: Axis.vertical).offset;
+      final double offsetX = getOffsetToReveal(descendant, 0.0, axis: Axis.horizontal).offset;
+      final double offsetY = getOffsetToReveal(descendant, 0.0, axis: Axis.vertical).offset;
       if (offsetX == 0 && offsetY == 0) {
         newRect = Offset.zero & descendant.size;
       }
@@ -406,15 +402,15 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
 
   @override
   Rect? describeSemanticsClip(RenderObject child) {
-    double maxScrollXExtent = clampDouble(
-        firstChild!.size.width - viewportDimension.width, 0, double.infinity);
-    double maxScrollYExtent = clampDouble(
-        firstChild!.size.height - viewportDimension.height, 0, double.infinity);
+    final double maxScrollXExtent =
+        clampDouble(firstChild!.size.width - viewportDimension.width, 0, double.infinity);
+    final double maxScrollYExtent =
+        clampDouble(firstChild!.size.height - viewportDimension.height, 0, double.infinity);
 
     final double remainingOffsetX = maxScrollXExtent - horizontalOffset.pixels;
     final double remainingOffsetY = maxScrollYExtent - verticalOffset.pixels;
 
-    Rect rect = Rect.fromLTRB(
+    final Rect rect = Rect.fromLTRB(
       semanticBounds.left - horizontalOffset.pixels,
       semanticBounds.top - verticalOffset.pixels,
       semanticBounds.right + remainingOffsetX,

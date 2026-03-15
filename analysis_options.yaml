@@ -1,4 +1,22 @@
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  errors:
+    missing_return: error
+    dead_code: warning
+
+linter:
+  rules:
+    - always_declare_return_types
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_single_quotes
+    - use_super_parameters
+    - avoid_print
+    - prefer_final_locals
+    - sort_constructors_first
+    - unawaited_futures
