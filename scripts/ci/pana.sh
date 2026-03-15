@@ -30,7 +30,7 @@ SUMMARYFILE="/tmp/${PREFIX}_pana_summary.txt"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 
 echo "[$TIMESTAMP] pana analysis" >"$LOGFILE"
-dart run pana --no-warning . >>"$LOGFILE" 2>&1
+pana --no-warning . >>"$LOGFILE" 2>&1
 PANA_EXIT=$?
 
 # Extract the score line (e.g. "Points: 140/160")

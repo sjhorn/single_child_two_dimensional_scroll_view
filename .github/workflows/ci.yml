@@ -37,5 +37,8 @@ jobs:
 
       - run: flutter pub get
 
+      - name: Install pana
+        run: dart pub global activate pana
+
       - name: Run pana analysis
         run: scripts/ci/pana.sh --verbose
