@@ -33,6 +33,7 @@ Delegate: **"use the `<name>` agent to `<task>`"**
 | Docs, examples, README, CHANGELOG | `docs` |
 | Run tests, analyze, format, coverage | `qa` |
 | GitHub issues, PRs, labels, branches | `github` |
+| Publish to pub.dev | `publish` |
 
 **Before every commit** → `qa`. **After public API changes** → `docs`.
 
