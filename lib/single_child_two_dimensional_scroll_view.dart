@@ -212,6 +212,11 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
     if (padding != null) {
       contents = Padding(padding: padding!, child: contents);
     }
+    final TextDirection? textDirection = Directionality.maybeOf(context);
+    final AxisDirection horizontalDirection = textDirection != null
+        ? getAxisDirectionFromAxisReverseAndDirectionality(
+            context, Axis.horizontal, reverseHorizontal)
+        : (reverseHorizontal ? AxisDirection.left : AxisDirection.right);
     return _SingleChild2DScrollView(
       verticalDetails: ScrollableDetails.vertical(
         reverse: reverseVertical,
@@ -219,8 +224,8 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
         controller: verticalController,
         decorationClipBehavior: clipBehavior,
       ),
-      horizontalDetails: ScrollableDetails.horizontal(
-        reverse: reverseHorizontal,
+      horizontalDetails: ScrollableDetails(
+        direction: horizontalDirection,
         physics: horizontalPhysics,
         controller: horizontalController,
         decorationClipBehavior: clipBehavior,
