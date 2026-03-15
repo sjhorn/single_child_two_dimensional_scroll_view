@@ -84,6 +84,8 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
     this.keyboardDismissBehavior = ScrollViewKeyboardDismissBehavior.manual,
     this.diagonalDragBehavior = DiagonalDragBehavior.none,
     this.restorationId,
+    this.cacheExtent,
+    this.cacheExtentStyle,
   });
 
   /// The amount of space by which to inset the child.
@@ -178,6 +180,12 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
   /// {@macro flutter.widgets.scrollable.restorationId}
   final String? restorationId;
 
+  /// {@macro flutter.rendering.RenderViewportBase.cacheExtent}
+  final double? cacheExtent;
+
+  /// {@macro flutter.rendering.RenderViewportBase.cacheExtentStyle}
+  final CacheExtentStyle? cacheExtentStyle;
+
   @override
   Widget build(BuildContext context) {
     Widget contents = child ?? const SizedBox.shrink();
@@ -204,6 +212,8 @@ class SingleChildTwoDimensionalScrollView extends StatelessWidget {
       hitTestBehavior: hitTestBehavior,
       diagonalDragBehavior: diagonalDragBehavior,
       restorationId: restorationId,
+      cacheExtent: cacheExtent,
+      cacheExtentStyle: cacheExtentStyle,
     );
   }
 }
@@ -218,6 +228,8 @@ class _SingleChild2DScrollView extends TwoDimensionalScrollView {
     super.clipBehavior = Clip.hardEdge,
     super.hitTestBehavior = HitTestBehavior.opaque,
     super.diagonalDragBehavior,
+    super.cacheExtent,
+    super.cacheExtentStyle,
     this.restorationId,
   });
 
@@ -301,6 +313,7 @@ class _SingleChild2DScrollView extends TwoDimensionalScrollView {
       delegate: delegate,
       mainAxis: mainAxis,
       cacheExtent: cacheExtent,
+      cacheExtentStyle: cacheExtentStyle,
       clipBehavior: clipBehavior,
     );
   }
@@ -315,6 +328,7 @@ class _SingleChild2DViewPort extends TwoDimensionalViewport {
     required super.delegate,
     required super.mainAxis,
     super.cacheExtent,
+    super.cacheExtentStyle,
     super.clipBehavior = Clip.hardEdge,
   });
 
@@ -327,6 +341,7 @@ class _SingleChild2DViewPort extends TwoDimensionalViewport {
       verticalAxisDirection: verticalAxisDirection,
       mainAxis: mainAxis,
       cacheExtent: cacheExtent,
+      cacheExtentStyle: cacheExtentStyle,
       childManager: context as TwoDimensionalChildManager,
       clipBehavior: clipBehavior,
       delegate: delegate as TwoDimensionalChildBuilderDelegate,
@@ -343,6 +358,7 @@ class _SingleChild2DViewPort extends TwoDimensionalViewport {
       ..verticalAxisDirection = verticalAxisDirection
       ..mainAxis = mainAxis
       ..cacheExtent = cacheExtent
+      ..cacheExtentStyle = cacheExtentStyle
       ..clipBehavior = clipBehavior
       ..delegate = delegate;
   }
@@ -357,6 +373,7 @@ class _RenderSingleChild2DViewPort extends RenderTwoDimensionalViewport {
     required TwoDimensionalChildBuilderDelegate delegate,
     required super.mainAxis,
     required super.cacheExtent,
+    super.cacheExtentStyle,
     required super.childManager,
     required super.clipBehavior,
   }) : super(delegate: delegate);

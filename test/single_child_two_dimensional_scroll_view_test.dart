@@ -1138,6 +1138,91 @@ void main() {
     expect(scrollable.hitTestBehavior, HitTestBehavior.translucent);
   });
 
+  testWidgets('SingleChildTwoDimensionalScrollView forwards cacheExtent to render object',
+      (WidgetTester tester) async {
+    // Default: cacheExtent is null (render object uses its own default).
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SingleChildTwoDimensionalScrollView(
+          child: Container(height: 2000.0),
+        ),
+      ),
+    );
+
+    final dynamic renderObject = tester.allRenderObjects
+        .where((RenderObject o) => o.runtimeType.toString() == '_RenderSingleChild2DViewPort')
+        .first;
+    // When cacheExtent is null the render object uses its own default; just verify no exception.
+    expect(renderObject, isNotNull); // ignore: avoid_dynamic_calls
+
+    // Custom cacheExtent is forwarded to the render object.
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SingleChildTwoDimensionalScrollView(
+          cacheExtent: 250.0,
+          child: Container(height: 2000.0),
+        ),
+      ),
+    );
+    expect(renderObject.cacheExtent, 250.0); // ignore: avoid_dynamic_calls
+
+    // Updated cacheExtent is forwarded on rebuild.
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SingleChildTwoDimensionalScrollView(
+          cacheExtent: 500.0,
+          child: Container(height: 2000.0),
+        ),
+      ),
+    );
+    expect(renderObject.cacheExtent, 500.0); // ignore: avoid_dynamic_calls
+  });
+
+  testWidgets('SingleChildTwoDimensionalScrollView forwards cacheExtentStyle to render object',
+      (WidgetTester tester) async {
+    // Default: cacheExtentStyle is null (render object uses CacheExtentStyle.pixel default).
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SingleChildTwoDimensionalScrollView(
+          child: Container(height: 2000.0),
+        ),
+      ),
+    );
+
+    final dynamic renderObject = tester.allRenderObjects
+        .where((RenderObject o) => o.runtimeType.toString() == '_RenderSingleChild2DViewPort')
+        .first;
+    expect(renderObject, isNotNull); // ignore: avoid_dynamic_calls
+
+    // CacheExtentStyle.viewport is forwarded to the render object.
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SingleChildTwoDimensionalScrollView(
+          cacheExtentStyle: CacheExtentStyle.viewport,
+          child: Container(height: 2000.0),
+        ),
+      ),
+    );
+    expect(renderObject.cacheExtentStyle, CacheExtentStyle.viewport); // ignore: avoid_dynamic_calls
+
+    // Updated cacheExtentStyle is forwarded on rebuild.
+    await tester.pumpWidget(
+      Directionality(
+        textDirection: TextDirection.ltr,
+        child: SingleChildTwoDimensionalScrollView(
+          cacheExtentStyle: CacheExtentStyle.pixel,
+          child: Container(height: 2000.0),
+        ),
+      ),
+    );
+    expect(renderObject.cacheExtentStyle, CacheExtentStyle.pixel); // ignore: avoid_dynamic_calls
+  });
+
   testWidgets('keyboardDismissBehavior tests', (WidgetTester tester) async {
     final List<FocusNode> focusNodes = List<FocusNode>.generate(50, (int i) => FocusNode());
     addTearDown(() {
